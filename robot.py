@@ -28,8 +28,8 @@ class SweetAssRobot(wpi.IterativeRobot):
         turboMultiplier = TURBO_MULT if isTurbo else 1
 
         forward = yAxis / FORWARD_DIVISOR * turboMultiplier
-        leftSpeed = 0.0
-        rightSpeed = 0.0
+        leftSpeed = forward
+        rightSpeed = -forward
 
         if forward <= MOTOR_DEADBAND:
             speed = xAxis / PIVOT_DIVISOR
@@ -44,6 +44,8 @@ class SweetAssRobot(wpi.IterativeRobot):
             elif xAxis < 0:
                 leftSpeed = divVal
                 rightSpeed = multVal
+
+        print("  >", leftSpeed, rightSpeed)
 
         self.lMotor.set(leftSpeed)
         self.rMotor.set(rightSpeed)
