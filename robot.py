@@ -21,7 +21,11 @@ class SweetAssRobot(wpi.IterativeRobot):
         print("  > Entered MANUAL mode.")
 
     def teleopPeriodic(self):
-        pass
+        yAxis = -self.controls.getAxis(FORWARD_AXIS_INDEX)
+        forwardVal = yAxis / FORWARD_DIVISOR
+
+        self.lMotor(forwardVal)
+        self.rMotor(-forwardVal)
 
     def testPeriodic(self):
         wpi.LiveWindow.run()
