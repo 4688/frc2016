@@ -12,6 +12,8 @@ class SweetAssRobot(wpi.IterativeRobot):
         self.rMotor = wpi.VictorSP(R_MOTOR_INDEX)
         self.rMotor.set(0.0)
 
+        self.controls = wpi.Joystick(JOYSTICK_INDEX)
+
     def autonomousInit(self):
         print("  > Entered AUTO mode.")
 
