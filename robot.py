@@ -1,11 +1,16 @@
 #!/usr/bin/env python3
 
+from robot_constants import *
 import wpilib as wpi
 
 class SweetAssRobot(wpi.IterativeRobot):
 
     def robotInit(self):
-        print("  > Robot initialized.")
+        self.lMotor = wpi.VictorSP(L_MOTOR_INDEX)
+        self.lMotor.set(0.0)
+
+        self.rMotor = wpi.VictorSP(R_MOTOR_INDEX)
+        self.rMotor.set(0.0)
 
     def autonomousInit(self):
         print("  > Entered AUTO mode.")
