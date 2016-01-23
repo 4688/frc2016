@@ -22,9 +22,9 @@ class SweetAssRobot(wpi.IterativeRobot):
 
     def teleopPeriodic(self):
         yAxis = -self.controls.getAxis(FORWARD_AXIS_INDEX)
-        isTurbo = self.controls.getRawButton(TURBO_BUTTON_INDEX)
+        isTurbo = self.controls.getRawButton(TURBO_BUTTON_INDEX) and ALLOW_TURBO
         turboMultiplier = TURBO_MULT if isTurbo else 1
-        
+
         forwardVal = yAxis / FORWARD_DIVISOR * turboMultiplier
 
         self.lMotor(forwardVal)

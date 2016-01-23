@@ -18,4 +18,5 @@ MOTOR_DEADBAND = 0.04 # Deadband of the wheel motors
 #===============================================================================
 
 FORWARD_DIVISOR = 4 # Forward/back movement speed divisor
+ALLOW_TURBO = True
 TURBO_MULT = 2 # Turbo speed multiplier
