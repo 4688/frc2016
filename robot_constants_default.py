@@ -5,6 +5,7 @@
 
 JOYSTICK_INDEX = 0 # Joystick port index
 FORWARD_AXIS_INDEX = 1 # Forward/back joystick axis index
+TURN_AXIS_INDEX = 5 # Left/right joystick axis index
 TURBO_BUTTON_INDEX = 3 # Turbo button index
 
 # MOTORS
@@ -18,5 +19,6 @@ MOTOR_DEADBAND = 0.04 # Deadband of the wheel motors
 #===============================================================================
 
 FORWARD_DIVISOR = 4 # Forward/back movement speed divisor
+PIVOT_DIVISOR = 6 # Stationary pivot speed divisor
 ALLOW_TURBO = True
 TURBO_MULT = 2 # Turbo speed multiplier
