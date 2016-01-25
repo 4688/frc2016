@@ -21,7 +21,7 @@ class SweetAssRobot(wpi.IterativeRobot):
         print("  > Entered MANUAL mode.")
 
     def teleopPeriodic(self):
-        yAxis = -self.controls.getRawAxis(FORWARD_AXIS_INDEX)
+        yAxis = self.controls.getRawAxis(FORWARD_AXIS_INDEX)
         xAxis = self.controls.getRawAxis(TURN_AXIS_INDEX)
 
         isTurbo = self.controls.getRawButton(TURBO_BUTTON_INDEX) and ALLOW_TURBO
@@ -32,20 +32,20 @@ class SweetAssRobot(wpi.IterativeRobot):
         rightSpeed = -forward
 
         if forward <= MOTOR_DEADBAND: # or forward >= -MOTOR_DEADBAND:
-            speed = xAxis / PIVOT_DIVISOR
-            leftSpeed = speed
-            rightSpeed = speed
-        elif forward > MOTOR_DEADBAND: # or forward < -MOTOR_DEADBAND:
+            turnSpeed = xAxis / PIVOT_DIVISOR
+            leftSpeed = turnSpeed
+            rightSpeed = turnSpeed
+        elif forward > MOTOR_DEADBAND or forward < -MOTOR_DEADBAND:
             multVal = forward * (abs(xAxis) + 1)
             divVal = forward / (abs(xAxis) + 1)
             if xAxis > MOTOR_DEADBAND:
                 leftSpeed = multVal
                 rightSpeed = -divVal
+                print("  > yes")
             elif xAxis < -MOTOR_DEADBAND:
                 leftSpeed = divVal
                 rightSpeed = -multVal
-
-        print("  >", leftSpeed, rightSpeed)
+                print("  > no")
 
         self.lMotor.set(leftSpeed)
         self.rMotor.set(rightSpeed)
