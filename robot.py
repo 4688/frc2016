@@ -31,19 +31,21 @@ class SweetAssRobot(wpi.IterativeRobot):
         leftSpeed = forward
         rightSpeed = -forward
 
-        if forward <= MOTOR_DEADBAND:
+        if forward <= MOTOR_DEADBAND: # or forward >= -MOTOR_DEADBAND:
             speed = xAxis / PIVOT_DIVISOR
             leftSpeed = speed
             rightSpeed = speed
-        elif forward > MOTOR_DEADBAND:
+        elif forward > MOTOR_DEADBAND: # or forward < -MOTOR_DEADBAND:
             multVal = forward * (abs(xAxis) + 1)
             divVal = forward / (abs(xAxis) + 1)
             if xAxis > MOTOR_DEADBAND:
                 leftSpeed = multVal
                 rightSpeed = -divVal
-            elif xAxis < MOTOR_DEADBAND:
+            elif xAxis < -MOTOR_DEADBAND:
                 leftSpeed = divVal
                 rightSpeed = -multVal
+
+        print("  >", leftSpeed, rightSpeed)
 
         self.lMotor.set(leftSpeed)
         self.rMotor.set(rightSpeed)
