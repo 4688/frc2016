@@ -41,11 +41,9 @@ class SweetAssRobot(wpi.IterativeRobot):
             if xAxis > MOTOR_DEADBAND:
                 leftSpeed = multVal
                 rightSpeed = -divVal
-                print("  > yes")
             elif xAxis < -MOTOR_DEADBAND:
                 leftSpeed = divVal
                 rightSpeed = -multVal
-                print("  > no")
 
         self.lMotor.set(leftSpeed)
         self.rMotor.set(rightSpeed)
