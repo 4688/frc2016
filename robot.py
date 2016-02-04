@@ -6,11 +6,13 @@ import wpilib as wpi
 class SweetAssRobot(wpi.IterativeRobot):
 
     def robotInit(self):
-        self.lMotor = wpi.VictorSP(L_MOTOR_INDEX)
-        self.lMotor.set(0.0)
+        self.lMotor0 = wpi.CANTalon(L_MOTOR_INDICES[0])
+        self.lMotor0.changeControlMode(wpi.CANTalon.ControlMode.PercentVbus)
+        self.lMotor0.set(0.0)
 
-        self.rMotor = wpi.VictorSP(R_MOTOR_INDEX)
-        self.rMotor.set(0.0)
+        self.rMotor0 = wpi.CANTalon(R_MOTOR_INDICES[0])
+        self.rMotor0.changeControlMode(wpi.CANTalon.ControlMode.PercentVbus)
+        self.rMotor0.set(0.0)
 
         self.controls = wpi.Joystick(JOYSTICK_INDEX)
 
@@ -27,27 +29,26 @@ class SweetAssRobot(wpi.IterativeRobot):
         isTurbo = self.controls.getRawButton(TURBO_BUTTON_INDEX) and ALLOW_TURBO
         turboMultiplier = TURBO_MULT if isTurbo else 1
 
-        forward = yAxis / FORWARD_DIVISOR * turboMultiplier
+        forward = -yAxis / FORWARD_DIVISOR * turboMultiplier
         leftSpeed = forward
         rightSpeed = -forward
 
-        if forward <= MOTOR_DEADBAND and abs(xAxis > MOTOR_DEADBAND): # or forward >= -MOTOR_DEADBAND:
+        if forward <= MOTOR_DEADBAND and abs(xAxis) > MOTOR_DEADBAND:
             # Theoretical pivot routine
             turnSpeed = xAxis / PIVOT_DIVISOR
             leftSpeed = turnSpeed
             rightSpeed = turnSpeed
         elif forward > MOTOR_DEADBAND or forward < -MOTOR_DEADBAND:
-            multVal = forward * (abs(xAxis) + 1)
-            divVal = forward / (abs(xAxis) + 1)
+            poorlyNamedVariable = (abs(xAxis) + 1)
             if xAxis > MOTOR_DEADBAND:
-                leftSpeed = multVal
-                rightSpeed = -divVal
+                leftSpeed *= poorlyNamedVariable
+                rightSpeed /= poorlyNamedVariable
             elif xAxis < -MOTOR_DEADBAND:
-                leftSpeed = divVal
-                rightSpeed = -multVal
+                leftSpeed /= poorlyNamedVariable
+                rightSpeed *= poorlyNamedVariable
 
-        self.lMotor.set(leftSpeed)
-        self.rMotor.set(rightSpeed)
+        self.lMotor0.set(leftSpeed)
+        self.rMotor0.set(rightSpeed)
 
     def testPeriodic(self):
         wpi.LiveWindow.run()
