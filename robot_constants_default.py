@@ -6,7 +6,7 @@
 JOYSTICK_INDEX = 0 # Joystick port index
 FORWARD_AXIS_INDEX = 1 # Forward/back joystick axis index
 TURN_AXIS_INDEX = 3 # Left/right joystick axis index
-TURBO_BUTTON_INDEX = 2 # Turbo button index
+TURBO_BUTTON_INDEX = 5 # Turbo button index
 
 # MOTORS
 #===============================================================================
