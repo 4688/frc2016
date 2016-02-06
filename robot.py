@@ -98,11 +98,9 @@ class SweetAssRobot(wpi.IterativeRobot):
                 leftSpeed /= turnFactor
                 rightSpeed *= turnFactor
 
-        intakeSpeed = self.controls.getRawAxis(BALL_INTAKE_AXIS_INDEX) / \
-            INTAKE_SPEED_DIVISOR
-
-        # Update values on dashboard
-        wpi.SmartDashboard.putDouble("Speed", leftSpeed)
+        ballOutputMultiplier = -1 if self.controls.getRawButton(1) else 1
+        intakeSpeed = (self.controls.getRawAxis(BALL_INTAKE_AXIS_INDEX) + 1) / \
+            INTAKE_SPEED_DIVISOR * ballOutputMultiplier
 
         self.lMotor0.set(leftSpeed)
         self.lMotor1.set(leftSpeed)
@@ -111,6 +109,7 @@ class SweetAssRobot(wpi.IterativeRobot):
 
         self.lIntakeMotor.set(-intakeSpeed)
         self.rIntakeMotor.set(intakeSpeed)
+        print(self.controls.getRawAxis(BALL_INTAKE_AXIS_INDEX))
 
     def testPeriodic(self):
         """
