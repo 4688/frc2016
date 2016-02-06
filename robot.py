@@ -15,17 +15,17 @@ class SweetAssRobot(wpi.IterativeRobot):
         self.lMotor0.changeControlMode(wpi.CANTalon.ControlMode.PercentVbus)
         self.lMotor0.set(0.0)
 
-        # self.lMotor1 = wpi.CANTalon(L_MOTOR_INDICES[1])
-        # self.lMotor1.changeControlMode(wpi.CANTalon.ControlMode.PercentVbus)
-        # self.lMotor1.set(0.0)
+        self.lMotor1 = wpi.CANTalon(L_MOTOR_INDICES[1])
+        self.lMotor1.changeControlMode(wpi.CANTalon.ControlMode.PercentVbus)
+        self.lMotor1.set(0.0)
 
         self.rMotor0 = wpi.CANTalon(R_MOTOR_INDICES[0])
         self.rMotor0.changeControlMode(wpi.CANTalon.ControlMode.PercentVbus)
         self.rMotor0.set(0.0)
 
-        # self.rMotor1 = wpi.CANTalon(R_MOTOR_INDICES[1])
-        # self.rMotor1.changeControlMode(wpi.CANTalon.ControlMode.PercentVbus)
-        # self.rMotor1.set(0.0)
+        self.rMotor1 = wpi.CANTalon(R_MOTOR_INDICES[1])
+        self.rMotor1.changeControlMode(wpi.CANTalon.ControlMode.PercentVbus)
+        self.rMotor1.set(0.0)
 
         self.controls = wpi.Joystick(JOYSTICK_INDEX)
 
@@ -92,9 +92,9 @@ class SweetAssRobot(wpi.IterativeRobot):
         wpi.SmartDashboard.putDouble("Speed", leftSpeed)
 
         self.lMotor0.set(leftSpeed)
-        # self.lMotor1.set(leftSpeed)
+        self.lMotor1.set(leftSpeed)
         self.rMotor0.set(rightSpeed)
-        # self.rMotor1.set(rightSpeed)
+        self.rMotor1.set(rightSpeed)
 
     def testPeriodic(self):
         """
