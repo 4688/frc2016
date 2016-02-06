@@ -66,18 +66,25 @@ class SweetAssRobot(wpi.IterativeRobot):
 
         if forward <= MOTOR_DEADBAND and abs(xAxis) > MOTOR_DEADBAND:
             # Pivot whilst stationary
+
             turnSpeed = xAxis / PIVOT_DIVISOR
             leftSpeed = turnSpeed
             rightSpeed = turnSpeed
+
         elif forward > MOTOR_DEADBAND or forward < -MOTOR_DEADBAND:
             # Turning whilst driving
+
             turnFactor = (abs(xAxis) + 1)
+
             if xAxis > MOTOR_DEADBAND:
                 # X axis is positive (to the right)
+
                 leftSpeed *= turnFactor
                 rightSpeed /= turnFactor
+
             elif xAxis < -MOTOR_DEADBAND:
                 # X axis if negative (to the left)
+                
                 leftSpeed /= turnFactor
                 rightSpeed *= turnFactor
 
