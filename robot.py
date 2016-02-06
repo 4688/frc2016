@@ -89,7 +89,7 @@ class SweetAssRobot(wpi.IterativeRobot):
                 rightSpeed *= turnFactor
 
         # Update values on dashboard
-        wpi.SmartDashboard.putData("Speed", leftSpeed)
+        wpi.SmartDashboard.putDouble("Speed", leftSpeed)
 
         self.lMotor0.set(leftSpeed)
         # self.lMotor1.set(leftSpeed)
