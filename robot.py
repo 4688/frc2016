@@ -33,10 +33,10 @@ class SweetAssRobot(wpi.IterativeRobot):
 
         # Ball intake motors
 
-        self.lIntakeMotor = wpi.Talon(L_INTAKE_MOTOR_INDEX)
+        self.lIntakeMotor = wpi.VictorSP(L_INTAKE_MOTOR_INDEX)
         self.lIntakeMotor.set(0.0)
 
-        self.rIntakeMotor = wpi.Talon(R_INTAKE_MOTOR_INDEX)
+        self.rIntakeMotor = wpi.VictorSP(R_INTAKE_MOTOR_INDEX)
         self.rIntakeMotor.set(0.0)
 
     def autonomousInit(self):
@@ -98,7 +98,7 @@ class SweetAssRobot(wpi.IterativeRobot):
                 leftSpeed /= turnFactor
                 rightSpeed *= turnFactor
 
-        intakeSpeed = self.controls.getRawAxis(BALL_INTAKE_AXIS_INDEX) /
+        intakeSpeed = self.controls.getRawAxis(BALL_INTAKE_AXIS_INDEX) / \
             INTAKE_SPEED_DIVISOR
 
         # Update values on dashboard
