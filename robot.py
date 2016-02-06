@@ -11,6 +11,10 @@ class SweetAssRobot(wpi.IterativeRobot):
             robot components accessible through WPIlib.
         """
 
+        self.controls = wpi.Joystick(JOYSTICK_INDEX)
+
+        # Movement motors
+
         self.lMotor0 = wpi.CANTalon(L_MOTOR_INDICES[0])
         self.lMotor0.changeControlMode(wpi.CANTalon.ControlMode.PercentVbus)
         self.lMotor0.set(0.0)
@@ -27,7 +31,13 @@ class SweetAssRobot(wpi.IterativeRobot):
         self.rMotor1.changeControlMode(wpi.CANTalon.ControlMode.PercentVbus)
         self.rMotor1.set(0.0)
 
-        self.controls = wpi.Joystick(JOYSTICK_INDEX)
+        # Ball intake motors
+
+        self.lIntakeMotor = wpi.Talon(L_INTAKE_MOTOR_INDEX)
+        self.lIntakeMotor.set(0.0)
+
+        self.rIntakeMotor = wpi.Talon(R_INTAKE_MOTOR_INDEX)
+        self.rIntakeMotor.set(0.0)
 
     def autonomousInit(self):
         """
@@ -88,6 +98,9 @@ class SweetAssRobot(wpi.IterativeRobot):
                 leftSpeed /= turnFactor
                 rightSpeed *= turnFactor
 
+        intakeSpeed = self.controls.getRawAxis(BALL_INTAKE_AXIS_INDEX) /
+            INTAKE_SPEED_DIVISOR
+
         # Update values on dashboard
         wpi.SmartDashboard.putDouble("Speed", leftSpeed)
 
@@ -95,6 +108,9 @@ class SweetAssRobot(wpi.IterativeRobot):
         self.lMotor1.set(leftSpeed)
         self.rMotor0.set(rightSpeed)
         self.rMotor1.set(rightSpeed)
+
+        self.lIntakeMotor.set(-intakeSpeed)
+        self.rIntakeMotor.set(intakeSpeed)
 
     def testPeriodic(self):
         """

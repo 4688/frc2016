@@ -14,6 +14,8 @@ TURBO_BUTTON_INDEX = 5 # Turbo button index
 L_MOTOR_INDICES = [1, 3] # Left motor CAN port index
 R_MOTOR_INDICES = [2, 4] # Right motor CAN port index
 MOTOR_DEADBAND = 0.04 # Deadband of the wheel motors
+L_INTAKE_MOTOR_INDEX = 1 # Left ball intake motor PWM port index
+R_INTAKE_MOTOR_INDEX = 2 # Right ball intake motor PWM port index
 
 # MOVEMENT
 #===============================================================================
