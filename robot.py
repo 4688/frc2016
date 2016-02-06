@@ -84,9 +84,12 @@ class SweetAssRobot(wpi.IterativeRobot):
 
             elif xAxis < -MOTOR_DEADBAND:
                 # X axis if negative (to the left)
-                
+
                 leftSpeed /= turnFactor
                 rightSpeed *= turnFactor
+
+        # Update values on dashboard
+        wpi.SmartDashboard.putData("Speed", leftSpeed)
 
         self.lMotor0.set(leftSpeed)
         # self.lMotor1.set(leftSpeed)
