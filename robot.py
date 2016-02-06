@@ -6,6 +6,11 @@ import wpilib as wpi
 class SweetAssRobot(wpi.IterativeRobot):
 
     def robotInit(self):
+        """
+            Called once when the robot starts up. This is where we initialize
+            robot components accessible through WPIlib.
+        """
+
         self.lMotor0 = wpi.CANTalon(L_MOTOR_INDICES[0])
         self.lMotor0.changeControlMode(wpi.CANTalon.ControlMode.PercentVbus)
         self.lMotor0.set(0.0)
@@ -25,12 +30,27 @@ class SweetAssRobot(wpi.IterativeRobot):
         self.controls = wpi.Joystick(JOYSTICK_INDEX)
 
     def autonomousInit(self):
+        """
+            Called once every time autonomous mode is entered.
+        """
+
         print("  > Entered AUTO mode.")
 
     def teleopInit(self):
+        """
+            Called once every time teleop (manual) mode is entered.
+        """
+
         print("  > Entered MANUAL mode.")
 
     def teleopPeriodic(self):
+        """
+            Called 50 times per second while the robot is in teleop (manual)
+            mode. This is essentially one "frame" of the robot code; that is,
+            this is when we interpret input, process built-in logic, and
+            send component commands, in that order.
+        """
+
         # Control stick axes
         yAxis = self.controls.getRawAxis(FORWARD_AXIS_INDEX)
         xAxis = self.controls.getRawAxis(TURN_AXIS_INDEX)
@@ -67,6 +87,10 @@ class SweetAssRobot(wpi.IterativeRobot):
         # self.rMotor1.set(rightSpeed)
 
     def testPeriodic(self):
+        """
+            Called 50 times per second while the robot is in test mode.
+        """
+
         wpi.LiveWindow.run()
 
 if __name__ == "__main__":
