@@ -29,4 +29,4 @@ TURBO_MULT = 2 # Turbo speed multiplier
 # BALL INTAKE
 #===============================================================================
 
-INTAKE_SPEED_DIVISOR = 2.5 # Ball intake motor speed divisor
+INTAKE_SPEED_DIVISOR = 3 # Ball intake motor speed divisor
