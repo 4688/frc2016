@@ -62,7 +62,9 @@ class SweetAssRobot(wpi.IterativeRobot):
                 rightSpeed *= turnFactor
 
         self.lMotor0.set(leftSpeed)
+        # self.lMotor1.set(leftSpeed)
         self.rMotor0.set(rightSpeed)
+        # self.rMotor1.set(rightSpeed)
 
     def testPeriodic(self):
         wpi.LiveWindow.run()
