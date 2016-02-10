@@ -43,7 +43,7 @@ class SweetAssRobot(wpi.IterativeRobot):
 
         # If at limits -> True, if in between -> False
         # Only move actuator when this is False!
-        self.armSwitch = wpi.DigitalInput(0) # TODO move index to constant
+        # self.armSwitch = wpi.DigitalInput(0) # TODO move index to constant
 
     def autonomousInit(self):
         """
@@ -138,7 +138,7 @@ class SweetAssRobot(wpi.IterativeRobot):
         self.lIntakeMotor.set(-intakeSpeed)
         self.rIntakeMotor.set(intakeSpeed)
 
-        print(str(self.armSwitch.get()))
+        # print(str(self.armSwitch.get()))
 
     def testPeriodic(self):
         """
