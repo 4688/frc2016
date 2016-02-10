@@ -39,6 +39,10 @@ class SweetAssRobot(wpi.IterativeRobot):
         self.rIntakeMotor = wpi.VictorSP(R_INTAKE_MOTOR_INDEX)
         self.rIntakeMotor.set(0.0)
 
+        # Actuator and switch
+
+        self.armSwitch = wpi.DigitalInput(0) # TODO move index to constant
+
     def autonomousInit(self):
         """
             Called once every time autonomous mode is entered.
@@ -109,7 +113,8 @@ class SweetAssRobot(wpi.IterativeRobot):
 
         self.lIntakeMotor.set(-intakeSpeed)
         self.rIntakeMotor.set(intakeSpeed)
-        print(self.controls.getRawAxis(BALL_INTAKE_AXIS_INDEX))
+
+        print(str(self.armSwitch.get()))
 
     def testPeriodic(self):
         """
