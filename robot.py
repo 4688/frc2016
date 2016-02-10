@@ -109,7 +109,6 @@ class SweetAssRobot(wpi.IterativeRobot):
 
         self.lIntakeMotor.set(-intakeSpeed)
         self.rIntakeMotor.set(intakeSpeed)
-        print(self.controls.getRawAxis(BALL_INTAKE_AXIS_INDEX))
 
     def testPeriodic(self):
         """
