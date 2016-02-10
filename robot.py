@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import sards.server as sards
 from robot_constants import *
 import wpilib as wpi
 
@@ -52,6 +53,7 @@ class SweetAssRobot(wpi.IterativeRobot):
         """
 
         print("  > Entered MANUAL mode.")
+        sards.startServer()
 
     def teleopPeriodic(self):
         """

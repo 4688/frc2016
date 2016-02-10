@@ -2,15 +2,23 @@
 
 import socket as s
 
-TCP_IP = "127.0.0.1"
-TCP_PORT = 5800
-TCP_BUFF_SIZE = 2**10
+def connect():
 
-sock = s.socket(s.AF_INET, s.SOCK_STREAM)
-sock.connect((TCP_IP, TCP_PORT))
-sock.send("Hello world from client!".encode())
+    TCP_IP = "10.46.88.2"
+    TCP_PORT = 5800
+    TCP_BUFF_SIZE = 2**10
 
-data = sock.recv(TCP_BUFF_SIZE)
-sock.close()
+    print("Starting client...")
 
-print("Received echo:", str(data.decode()))
+    sock = s.socket(s.AF_INET, s.SOCK_STREAM)
+    print("init socket")
+    sock.connect((TCP_IP, TCP_PORT))
+    print("connected")
+    sock.send("Hello world from client!".encode())
+    print("sent")
+
+    data = sock.recv(TCP_BUFF_SIZE)
+    print("received")
+    sock.close()
+
+    print("Received echo:", str(data.decode()))
