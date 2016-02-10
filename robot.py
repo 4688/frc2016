@@ -41,6 +41,8 @@ class SweetAssRobot(wpi.IterativeRobot):
 
         # Actuator and switch
 
+        # If at limits -> True, if in between -> False
+        # Only move actuator when this is False!
         self.armSwitch = wpi.DigitalInput(0) # TODO move index to constant
 
     def autonomousInit(self):
@@ -102,9 +104,31 @@ class SweetAssRobot(wpi.IterativeRobot):
                 leftSpeed /= turnFactor
                 rightSpeed *= turnFactor
 
+        # Ball intake
+
         ballOutputMultiplier = -1 if self.controls.getRawButton(1) else 1
         intakeSpeed = (self.controls.getRawAxis(BALL_INTAKE_AXIS_INDEX) + 1) / \
             INTAKE_SPEED_DIVISOR * ballOutputMultiplier
+
+        """
+        If X button (index 3) down & not Y button (index 4) down: // extend
+            Set STATE to "e"
+            Set ACTIVE to True
+        If Y button (index 4) down & not X button (index 3) down: // retract
+            Set STATE to "r"
+            Set ACTIVE to True
+        If neither button down:
+            Set ACTIVE to False
+        If ACTIVE:
+            If STATE is "e" & not switch:
+                Set so that arm extends
+            O/W if STATE is "e" & switch:
+                Set so that arm retracts a lil bit
+            O/W if STATE is "r" & not switch:
+                Set so that arm retracts
+            O/W if STATE is "r" & switch:
+                Set so that arm extends a lil bit
+        """
 
         self.lMotor0.set(leftSpeed)
         self.lMotor1.set(leftSpeed)
