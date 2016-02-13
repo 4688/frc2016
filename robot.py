@@ -37,16 +37,20 @@ class SweetAssRobot(wpi.IterativeRobot):
         self.lIntakeMotor = wpi.VictorSP(L_INTAKE_MOTOR_INDEX)
         self.lIntakeMotor.set(0.0)
 
-        self.rIntakeMotor = wpi.VictorSP(R_INTAKE_MOTOR_INDEX)
-        self.rIntakeMotor.set(0.0)
+        # self.rIntakeMotor = wpi.VictorSP(R_INTAKE_MOTOR_INDEX)
+        # self.rIntakeMotor.set(0.0)
 
         # Actuator and switch
 
+        self.armMotor = wpi.VictorSP(2) # TODO move index to constant
+
         # If at limits -> True, if in between -> False
         # Only move actuator when this is False!
-        # self.armSwitch = wpi.DigitalInput(0) # TODO move index to constant
+        self.armSwitch = wpi.DigitalInput(0) # TODO move index to constant
 
-        self.camera = wpi.USBCamera(name="cam0".encode())
+        # Camera
+
+        self.camera = wpi.USBCamera(name="cam0".encode()) # TODO move name to constant
         self.camera.startCapture()
         self.camServer = wpi.CameraServer()
         self.camServer.startAutomaticCapture(self.camera)
@@ -112,9 +116,11 @@ class SweetAssRobot(wpi.IterativeRobot):
 
         # Ball intake
 
-        ballOutputMultiplier = -1 if self.controls.getRawButton(1) else 1
+        ballOutputMultiplier = 1 if self.controls.getRawButton(1) else -1
         intakeSpeed = (self.controls.getRawAxis(BALL_INTAKE_AXIS_INDEX) + 1) / \
             INTAKE_SPEED_DIVISOR * ballOutputMultiplier
+
+        # Arm movement
 
         """
         If X button (index 3) down & not Y button (index 4) down: // extend
@@ -136,6 +142,18 @@ class SweetAssRobot(wpi.IterativeRobot):
                 Set so that arm extends a lil bit
         """
 
+        xBtn = self.controls.getRawButton(3)
+        yBtn = self.controls.getRawButton(4)
+
+        armActive = (xBtn and not yBtn) or (yBtn and not xBtn)
+        state = ("e" if xBtn else "r") if xBtn != yBtn else state
+
+        armSpeedMult = 1 if state == "e" else -1
+        armLimitMult = -1 if self.armSwitch.get() else 1
+
+        self.preservedArmSpeed = 0.1 * armSpeedMult * armLimitMult
+        finalArmSpeed = self.preservedArmSpeed
+
         self.lMotor0.set(leftSpeed)
         self.lMotor1.set(leftSpeed)
         self.rMotor0.set(rightSpeed)
@@ -143,6 +161,9 @@ class SweetAssRobot(wpi.IterativeRobot):
 
         self.lIntakeMotor.set(-intakeSpeed)
         self.rIntakeMotor.set(intakeSpeed)
+
+        if finalArmSpeed != self.preservedArmSpeed:
+            self.armMotor.set(finalArmSpeed)
 
         # print(str(self.armSwitch.get()))
 
