@@ -1,8 +1,11 @@
 #!/usr/bin/env python3
 
-import sards.server as sards
-from robot_constants import *
+from threading import Thread
+
 import wpilib as wpi
+
+from robot_constants import *
+import sards.server as sards
 
 class SweetAssRobot(wpi.IterativeRobot):
 
@@ -40,6 +43,13 @@ class SweetAssRobot(wpi.IterativeRobot):
         self.rIntakeMotor = wpi.VictorSP(R_INTAKE_MOTOR_INDEX)
         self.rIntakeMotor.set(0.0)
 
+        # Thread(target=sards.beginSend)
+
+        self.camera = wpi.USBCamera(name="cam0".encode())
+        self.camera.startCapture()
+        self.camServer = wpi.CameraServer()
+        self.camServer.startAutomaticCapture(self.camera)
+
     def autonomousInit(self):
         """
             Called once every time autonomous mode is entered.
@@ -53,7 +63,6 @@ class SweetAssRobot(wpi.IterativeRobot):
         """
 
         print("  > Entered MANUAL mode.")
-        sards.startServer()
 
     def teleopPeriodic(self):
         """
