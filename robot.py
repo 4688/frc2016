@@ -1,7 +1,10 @@
 #!/usr/bin/env python3
 
-from robot_constants import *
+from threading import Thread
+
 import wpilib as wpi
+
+from robot_constants import *
 
 class SweetAssRobot(wpi.IterativeRobot):
 
@@ -38,6 +41,11 @@ class SweetAssRobot(wpi.IterativeRobot):
 
         self.rIntakeMotor = wpi.VictorSP(R_INTAKE_MOTOR_INDEX)
         self.rIntakeMotor.set(0.0)
+
+        self.camera = wpi.USBCamera(name="cam0".encode())
+        self.camera.startCapture()
+        self.camServer = wpi.CameraServer()
+        self.camServer.startAutomaticCapture(self.camera)
 
     def autonomousInit(self):
         """
@@ -109,7 +117,6 @@ class SweetAssRobot(wpi.IterativeRobot):
 
         self.lIntakeMotor.set(-intakeSpeed)
         self.rIntakeMotor.set(intakeSpeed)
-        print(self.controls.getRawAxis(BALL_INTAKE_AXIS_INDEX))
 
     def testPeriodic(self):
         """
