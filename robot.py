@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 
-from robot_constants import *
 import wpilib as wpi
+
+from robot_constants import *
 
 class SweetAssRobot(wpi.IterativeRobot):
 
@@ -44,6 +45,11 @@ class SweetAssRobot(wpi.IterativeRobot):
         # If at limits -> True, if in between -> False
         # Only move actuator when this is False!
         # self.armSwitch = wpi.DigitalInput(0) # TODO move index to constant
+
+        self.camera = wpi.USBCamera(name="cam0".encode())
+        self.camera.startCapture()
+        self.camServer = wpi.CameraServer()
+        self.camServer.startAutomaticCapture(self.camera)
 
     def autonomousInit(self):
         """
