@@ -1,7 +1,5 @@
 #!/usr/bin/env python3
 
-from threading import Thread
-
 import wpilib as wpi
 
 from robot_constants import *
@@ -39,10 +37,20 @@ class SweetAssRobot(wpi.IterativeRobot):
         self.lIntakeMotor = wpi.VictorSP(L_INTAKE_MOTOR_INDEX)
         self.lIntakeMotor.set(0.0)
 
-        self.rIntakeMotor = wpi.VictorSP(R_INTAKE_MOTOR_INDEX)
-        self.rIntakeMotor.set(0.0)
+        # self.rIntakeMotor = wpi.VictorSP(R_INTAKE_MOTOR_INDEX)
+        # self.rIntakeMotor.set(0.0)
 
-        self.camera = wpi.USBCamera(name="cam0".encode())
+        # Actuator and switch
+
+        self.armMotor = wpi.VictorSP(2) # TODO move index to constant
+
+        # If at limits -> True, if in between -> False
+        # Only move actuator when this is False!
+        self.armSwitch = wpi.DigitalInput(0) # TODO move index to constant
+
+        # Camera
+
+        self.camera = wpi.USBCamera(name="cam0".encode()) # TODO move name to constant
         self.camera.startCapture()
         self.camServer = wpi.CameraServer()
         self.camServer.startAutomaticCapture(self.camera)
@@ -106,9 +114,45 @@ class SweetAssRobot(wpi.IterativeRobot):
                 leftSpeed /= turnFactor
                 rightSpeed *= turnFactor
 
-        ballOutputMultiplier = -1 if self.controls.getRawButton(1) else 1
+        # Ball intake
+
+        ballOutputMultiplier = 1 if self.controls.getRawButton(1) else -1
         intakeSpeed = (self.controls.getRawAxis(BALL_INTAKE_AXIS_INDEX) + 1) / \
             INTAKE_SPEED_DIVISOR * ballOutputMultiplier
+
+        # Arm movement
+
+        """
+        If X button (index 3) down & not Y button (index 4) down: // extend
+            Set STATE to "e"
+            Set ACTIVE to True
+        If Y button (index 4) down & not X button (index 3) down: // retract
+            Set STATE to "r"
+            Set ACTIVE to True
+        If neither button down:
+            Set ACTIVE to False
+        If ACTIVE:
+            If STATE is "e" & not switch:
+                Set so that arm extends
+            O/W if STATE is "e" & switch:
+                Set so that arm retracts a lil bit
+            O/W if STATE is "r" & not switch:
+                Set so that arm retracts
+            O/W if STATE is "r" & switch:
+                Set so that arm extends a lil bit
+        """
+
+        xBtn = self.controls.getRawButton(3)
+        yBtn = self.controls.getRawButton(4)
+
+        armActive = (xBtn and not yBtn) or (yBtn and not xBtn)
+        state = ("e" if xBtn else "r") if xBtn != yBtn else state
+
+        armSpeedMult = 1 if state == "e" else -1
+        armLimitMult = -1 if self.armSwitch.get() else 1
+
+        self.preservedArmSpeed = 0.1 * armSpeedMult * armLimitMult
+        finalArmSpeed = self.preservedArmSpeed
 
         self.lMotor0.set(leftSpeed)
         self.lMotor1.set(leftSpeed)
@@ -117,6 +161,11 @@ class SweetAssRobot(wpi.IterativeRobot):
 
         self.lIntakeMotor.set(-intakeSpeed)
         self.rIntakeMotor.set(intakeSpeed)
+
+        if finalArmSpeed != self.preservedArmSpeed:
+            self.armMotor.set(finalArmSpeed)
+
+        # print(str(self.armSwitch.get()))
 
     def testPeriodic(self):
         """
