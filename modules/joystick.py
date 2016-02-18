@@ -49,8 +49,9 @@ RECORD_BTN_INDEX = 2
 
 # Joystick button indices for manual routine playback.
 # Press one of these buttons to manually run the corresponding recorded routine.
+# Order is Up, Right, Down, Left.
 # Default: 9, 10, 11, 12
-ROUTINE_BTN_INDICES = (9, 10, 11, 12)
+ROUTINE_BTN_INDICES = (9, 12, 10, 11)
 
 # REPLAY JOYSTICK
 #===============================================================================
@@ -59,7 +60,9 @@ class FakeJoystick:
     """
         A fake joystick that is generated during playback. Can be used to
         imitate the state of an actual joystick by implementing all the
-        appropriate functions.
+        appropriate functions, and the program will never be the wiser. Just
+        pass it as an argument instead of the actual joystick while playing
+        back a routine.
     """
 
     def __init__(self, stateStr):
