@@ -31,6 +31,9 @@ playing = -1
 
 routines = [None, None, None, None]
 currentRoutine = []
+currentPlaybackFrame = 0
+
+emulatedJoystick = None
 
 def formatInputStateStr(joystick):
     """
@@ -131,7 +134,7 @@ def parseRoutineFile(routineNum):
         routine = {"name": lines.pop(0), "lines": []}
 
         for line in lines:
-            lineData = "#".split(line)
+            lineData = line.split("#")
             routine["lines"].append({
                 "frames": lineData[0],
                 "input": lineData[1]
@@ -144,4 +147,20 @@ def startPlayback(routineNum):
         Begins playback of a routine, indexed by number.
     """
 
-    pass
+    playing = routineNum
+
+    if routines[routineNum] is not None:
+        currentRoutine = routines[routineNum]
+        currentPlaybackFrame = 0
+
+def tickPlayback():
+    """
+        Moves to the next frame during a playback. Hopefully this is called at
+        the same rate as the robot during teleop.
+    """
+
+    if playing >= 0:
+
+        cR = currentRoutine
+        cPF = currentPlaybackFrame
+        emulatedJoystick = j.FakeJoystick(cR[cPF]["input"])

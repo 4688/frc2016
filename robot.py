@@ -61,6 +61,13 @@ class SweetAssRobot(wpi.IterativeRobot):
             component commands, in that order.
         """
 
+        if r.playing >= 0:
+            r.tickPlayback()
+        elif r.recording >= 0:
+            r.logState(self.joystick)
+
+        joystickToUse = self.joystick if not r.playing else r.emulatedJoystick
+
         lDriveSpd = d.getDriveLeft(joystick=self.joystick)
         self.lMotor0.set(lDriveSpd)
         self.lMotor1.set(lDriveSpd)

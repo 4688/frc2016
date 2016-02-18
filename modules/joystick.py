@@ -66,4 +66,29 @@ class FakeJoystick:
     """
 
     def __init__(self, stateStr):
-        pass
+
+        axesState, btnsState = stateStr.split("/")
+
+        # Split axes and buttons into manageable arrays
+        self.axes = [float(num) for num in axesState.split(":")]
+        self.buttons = [bool(int(btn)) for btn in list(btnsState)]
+
+    def getRawButton(self, btnIndex):
+        """
+            Get the state of a button by index. NOT zero-indexed.
+        """
+
+        return self.buttons[btnIndex + 1]
+
+    def getRawAxis(self, axisIndex):
+        """
+            Get the value of an axis by index.
+        """
+
+        return self.axes[btnIndex]
+
+    def getButtonCount(self):
+        return len(self.buttons)
+
+    def getAxisCount(self):
+        return len(self.axes)
