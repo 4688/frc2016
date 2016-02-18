@@ -23,7 +23,7 @@ INTAKE_SPD_DIVISOR = 1
 # CALCULATIONS
 #===============================================================================
 
-def getIntakeSpeed(joystick: wpi.Joystick):
+def getIntakeSpeed(joystick):
     """
         Calculates and returns the speed of the intake motors, relative to
         input.

@@ -4,6 +4,7 @@ import modules.arm as a
 import modules.ball as b
 import modules.drive as d
 import modules.joystick as j
+import modules.replay as r
 import modules.station as s
 
 import wpilib as wpi
@@ -49,6 +50,8 @@ class SweetAssRobot(wpi.IterativeRobot):
 
         # Initialize camera stream
         s.startCamera()
+
+        r.logState(joystick=self.joystick)
 
     def teleopPeriodic(self):
         """

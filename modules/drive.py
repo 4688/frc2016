@@ -42,7 +42,7 @@ TURBO_FACTOR = 2
 # CALCULATIONS
 #===============================================================================
 
-def getDriveLeft(joystick: wpi.Joystick):
+def getDriveLeft(joystick):
     """
         Calculates and returns the speed of the left drive motors, relative to
         input.
@@ -77,7 +77,7 @@ def getDriveLeft(joystick: wpi.Joystick):
 
     return speed
 
-def getDriveRight(joystick: wpi.Joystick):
+def getDriveRight(joystick):
     """
         Calculates and returns the speed of the right drive motors, relative to
         input.
