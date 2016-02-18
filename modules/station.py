@@ -20,6 +20,4 @@ def startCamera():
 
     camera = wpi.USBCamera(name=CAMERA_NAME.encode())
     camServer = wpi.CameraServer()
-
-    camera.startCapture()
     camServer.startAutomaticCapture(camera)

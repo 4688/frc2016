@@ -40,13 +40,9 @@ class SweetAssRobot(wpi.IterativeRobot):
         self.rMotor1.changeControlMode(wpi.CANTalon.ControlMode.PercentVbus)
         self.rMotor1.set(0.0)
 
-        # Left intake motor
-        self.lIntakeMotor = wpi.VictorSP(b.L_INTAKE_INDEX)
-        self.lIntakeMotor.set(0.0)
-
-        # Right intake motor
-        self.rIntakeMotor = wpi.VictorSP(b.R_INTAKE_INDEX)
-        self.rIntakeMotor.set(0.0)
+        # Intake motors
+        self.intakeMotor = wpi.VictorSP(b.INTAKE_INDEX)
+        self.intakeMotor.set(0.0)
 
         # Initialize camera stream
         s.startCamera()
@@ -77,8 +73,7 @@ class SweetAssRobot(wpi.IterativeRobot):
         self.rMotor1.set(rDriveSpd)
 
         intakeSpd = b.getIntakeSpeed(joystick=self.joystick)
-        self.lIntakeMotor.set(-intakeSpd)
-        self.rIntakeMotor.set(intakeSpd)
+        self.intakeMotor.set(-intakeSpd)
 
     def testPeriodic(self):
         """

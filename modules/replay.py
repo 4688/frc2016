@@ -48,14 +48,14 @@ def formatInputStateStr(joystick):
     for axisNum in range(joystick.getAxisCount()):
         axisValues.append(joystick.getRawAxis(axisNum))
     for btnNum in range(joystick.getButtonCount()):
-        btnStates.append(joystick.getRawButton(btnNum))
+        btnStates.append(joystick.getRawButton(btnNum + 1))
 
     # Create axis segments
     axisStateStr = ":".join([str(axis) for axis in axisValues])
     print(axisStateStr)
 
     # Create button segments
-    btnStateStr = "".join([str(int(x)) for x in btnStates])
+    btnStateStr = "".join([str(int(btn)) for btn in btnStates])
     print(btnStateStr)
 
     return axisStateStr + "/" + btnStateStr

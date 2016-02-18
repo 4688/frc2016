@@ -62,16 +62,16 @@ def getDriveLeft(joystick):
     if forward <= DRIVE_DEADBAND and abs(xAxis) > DRIVE_DEADBAND:
         # Pivot whilst stationary
 
-        speed = xAxis / PIVOT_DIVISOR
+        speed = xAxis / DRIVE_SPD_DIVISOR
 
     elif forward > DRIVE_DEADBAND or forward < -DRIVE_DEADBAND:
         # Turn whilst driving
         turnFactor = abs(xAxis) + 1
 
-        if xAxis > MOTOR_DEADBAND:
+        if xAxis > DRIVE_DEADBAND:
             # X-axis is positive (turn to the right)
             speed *= turnFactor
-        elif xAxis < -MOTOR_DEADBAND:
+        elif xAxis < -DRIVE_DEADBAND:
             # X-axis is negative (turn to the left)
             speed /= turnFactor
 
@@ -97,16 +97,16 @@ def getDriveRight(joystick):
     if forward <= DRIVE_DEADBAND and abs(xAxis) > DRIVE_DEADBAND:
         # Pivot whilst stationary
 
-        speed = xAxis / PIVOT_DIVISOR
+        speed = xAxis / DRIVE_SPD_DIVISOR
 
     elif forward > DRIVE_DEADBAND or forward < -DRIVE_DEADBAND:
         # Turn whilst driving
         turnFactor = abs(xAxis) + 1
 
-        if xAxis > MOTOR_DEADBAND:
+        if xAxis > DRIVE_DEADBAND:
             # X-axis is positive (turn to the right)
             speed /= turnFactor
-        elif xAxis < -MOTOR_DEADBAND:
+        elif xAxis < -DRIVE_DEADBAND:
             # X-axis is negative (turn to the left)
             speed *= turnFactor
 
