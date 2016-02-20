@@ -44,6 +44,11 @@ class SweetAssRobot(wpi.IterativeRobot):
         self.intakeMotor = wpi.VictorSP(b.INTAKE_INDEX)
         self.intakeMotor.set(0.0)
 
+        # Lever limit switches
+        # TODO change indices to constants
+        self.leverUpLimit = wpi.DigitalInput(1)
+        self.leverDownLimit = wpi.DigitalInput(2)
+
         r.logState(joystick=self.joystick)
 
     def teleopPeriodic(self):
