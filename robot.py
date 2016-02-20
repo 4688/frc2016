@@ -45,9 +45,8 @@ class SweetAssRobot(wpi.IterativeRobot):
         self.intakeMotor.set(0.0)
 
         # Lever limit switches
-        # TODO change indices to constants
-        self.leverUpLimit = wpi.DigitalInput(1)
-        self.leverDownLimit = wpi.DigitalInput(2)
+        self.leverUpLimit = wpi.DigitalInput(b.LEVER_LIMIT_INDICES[0])
+        self.leverDownLimit = wpi.DigitalInput(b.LEVER_LIMIT_INDICES[1])
 
         r.logState(joystick=self.joystick)
 

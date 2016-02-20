@@ -11,9 +11,14 @@ import wpilib as wpi
 # Default: 1
 INTAKE_INDEX = 1
 
-# PWN port index of the ball release lever.
+# PWM port index of the ball release lever.
 # Default: 2
 LEVER_INDEX = 2
+
+# PWM port indices of the release lever's limit switches.
+# Indices are for up & down limits respectively.
+# Default: 1, 2
+LEVER_LIMIT_INDICES = (1, 2)
 
 # Divisor by which the speed of the intake motors is divided relative to input.
 # Set this to a higher value if not using a low-torque motor!
