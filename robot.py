@@ -44,9 +44,6 @@ class SweetAssRobot(wpi.IterativeRobot):
         self.intakeMotor = wpi.VictorSP(b.INTAKE_INDEX)
         self.intakeMotor.set(0.0)
 
-        # Initialize camera stream
-        s.startCamera()
-
         r.logState(joystick=self.joystick)
 
     def teleopPeriodic(self):
