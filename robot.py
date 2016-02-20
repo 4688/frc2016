@@ -47,7 +47,7 @@ class SweetAssRobot(wpi.IterativeRobot):
         # Lever limit switches
         self.leverLimit = wpi.DigitalInput(b.LEVER_LIMIT_INDICES[1])
 
-        # Compressor
+        # Compressor & stuff
         self.compressor = wpi.Compressor(0)
         self.compressor.setClosedLoopControl(True)
 
