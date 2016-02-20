@@ -69,8 +69,12 @@ class SweetAssRobot(wpi.IterativeRobot):
         self.rMotor0.set(rDriveSpd)
         self.rMotor1.set(rDriveSpd)
 
-        intakeSpd = b.getIntakeSpeed(joystick=self.joystick)
-        self.intakeMotor.set(-intakeSpd)
+        intakeMotorSpd = b.getIntakeSpeed(joystick=self.joystick)
+        self.intakeMotorSpd.set(intakeMotorSpd)
+
+        b.tickOutputTimer()
+        leverSpd = b.getEjectLeverSpeed(upLimit=self.leverUpLimit,
+            downLimit=self.leverDownLimit)
 
     def testPeriodic(self):
         """
