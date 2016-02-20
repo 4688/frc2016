@@ -42,7 +42,7 @@ TURBO_FACTOR = 2
 # CALCULATIONS
 #===============================================================================
 
-def getDriveLeft(joystick: wpi.Joystick):
+def getDriveLeft(joystick):
     """
         Calculates and returns the speed of the left drive motors, relative to
         input.
@@ -62,22 +62,22 @@ def getDriveLeft(joystick: wpi.Joystick):
     if forward <= DRIVE_DEADBAND and abs(xAxis) > DRIVE_DEADBAND:
         # Pivot whilst stationary
 
-        speed = xAxis / PIVOT_DIVISOR
+        speed = xAxis / DRIVE_SPD_DIVISOR
 
     elif forward > DRIVE_DEADBAND or forward < -DRIVE_DEADBAND:
         # Turn whilst driving
         turnFactor = abs(xAxis) + 1
 
-        if xAxis > MOTOR_DEADBAND:
+        if xAxis > DRIVE_DEADBAND:
             # X-axis is positive (turn to the right)
             speed *= turnFactor
-        elif xAxis < -MOTOR_DEADBAND:
+        elif xAxis < -DRIVE_DEADBAND:
             # X-axis is negative (turn to the left)
             speed /= turnFactor
 
     return speed
 
-def getDriveRight(joystick: wpi.Joystick):
+def getDriveRight(joystick):
     """
         Calculates and returns the speed of the right drive motors, relative to
         input.
@@ -97,16 +97,16 @@ def getDriveRight(joystick: wpi.Joystick):
     if forward <= DRIVE_DEADBAND and abs(xAxis) > DRIVE_DEADBAND:
         # Pivot whilst stationary
 
-        speed = xAxis / PIVOT_DIVISOR
+        speed = xAxis / DRIVE_SPD_DIVISOR
 
     elif forward > DRIVE_DEADBAND or forward < -DRIVE_DEADBAND:
         # Turn whilst driving
         turnFactor = abs(xAxis) + 1
 
-        if xAxis > MOTOR_DEADBAND:
+        if xAxis > DRIVE_DEADBAND:
             # X-axis is positive (turn to the right)
             speed /= turnFactor
-        elif xAxis < -MOTOR_DEADBAND:
+        elif xAxis < -DRIVE_DEADBAND:
             # X-axis is negative (turn to the left)
             speed *= turnFactor
 

@@ -7,13 +7,9 @@ import wpilib as wpi
 # CONSTANTS
 #===============================================================================
 
-# PWM port index of the left intake motor.
+# PWM port index of the intake motor controller.
 # Default: 1
-L_INTAKE_INDEX = 1
-
-# PWM port index of the right intake motor.
-# Default: 2
-R_INTAKE_INDEX = 2
+INTAKE_INDEX = 1
 
 # Divisor by which the speed of the intake motors is divided relative to input.
 # Set this to a higher value if not using a low-torque motor!
@@ -23,7 +19,7 @@ INTAKE_SPD_DIVISOR = 1
 # CALCULATIONS
 #===============================================================================
 
-def getIntakeSpeed(joystick: wpi.Joystick):
+def getIntakeSpeed(joystick):
     """
         Calculates and returns the speed of the intake motors, relative to
         input.

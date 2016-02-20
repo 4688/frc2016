@@ -4,6 +4,7 @@ import modules.arm as a
 import modules.ball as b
 import modules.drive as d
 import modules.joystick as j
+import modules.replay as r
 import modules.station as s
 
 import wpilib as wpi
@@ -39,16 +40,11 @@ class SweetAssRobot(wpi.IterativeRobot):
         self.rMotor1.changeControlMode(wpi.CANTalon.ControlMode.PercentVbus)
         self.rMotor1.set(0.0)
 
-        # Left intake motor
-        self.lIntakeMotor = wpi.VictorSP(b.L_INTAKE_INDEX)
-        self.lIntakeMotor.set(0.0)
+        # Intake motors
+        self.intakeMotor = wpi.VictorSP(b.INTAKE_INDEX)
+        self.intakeMotor.set(0.0)
 
-        # Right intake motor
-        self.rIntakeMotor = wpi.VictorSP(b.R_INTAKE_INDEX)
-        self.rIntakeMotor.set(0.0)
-
-        # Initialize camera stream
-        s.startCamera()
+        r.logState(joystick=self.joystick)
 
     def teleopPeriodic(self):
         """
@@ -57,6 +53,13 @@ class SweetAssRobot(wpi.IterativeRobot):
             is where we interpret user input, process built-in logic, and send
             component commands, in that order.
         """
+
+        if r.playing >= 0:
+            r.tickPlayback()
+        elif r.recording >= 0:
+            r.logState(self.joystick)
+
+        joystickToUse = self.joystick if not r.playing else r.emulatedJoystick
 
         lDriveSpd = d.getDriveLeft(joystick=self.joystick)
         self.lMotor0.set(lDriveSpd)
@@ -67,8 +70,7 @@ class SweetAssRobot(wpi.IterativeRobot):
         self.rMotor1.set(rDriveSpd)
 
         intakeSpd = b.getIntakeSpeed(joystick=self.joystick)
-        self.lIntakeMotor.set(-intakeSpd)
-        self.rIntakeMotor.set(intakeSpd)
+        self.intakeMotor.set(-intakeSpd)
 
     def testPeriodic(self):
         """
