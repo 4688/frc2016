@@ -44,6 +44,9 @@ class SweetAssRobot(wpi.IterativeRobot):
         self.intakeMotor = wpi.VictorSP(b.INTAKE_INDEX)
         self.intakeMotor.set(0.0)
 
+        self.ejectLever = wpi.VictorSP(2)
+        self.ejectLever.set(0.0)
+
         # Lever limit switches
         self.leverLimit = wpi.DigitalInput(b.LEVER_LIMIT_INDICES[1])
 
@@ -77,8 +80,12 @@ class SweetAssRobot(wpi.IterativeRobot):
         intakeMotorSpd = b.getIntakeSpeed(joystick=self.joystick)
         self.intakeMotor.set(intakeMotorSpd)
 
-        b.tickEjectTimer(limit=self.leverLimit)
+        """b.tickEjectTimer(joystick=self.joystick, limit=self.leverLimit)
         leverSpd = b.getEjectLeverSpeed()
+        self.ejectLever.set(leverSpd)"""
+
+        leverSpd = b.getEjectLeverSpeed(joystick=self.joystick, limit=self.leverLimit)
+        self.ejectLever.set(leverSpd)
 
     def testPeriodic(self):
         """

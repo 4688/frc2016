@@ -18,7 +18,7 @@ LEVER_INDEX = 2
 # PWM port indices of the release lever's limit switches.
 # Indices are for up & down limits respectively.
 # Default: 1, 2
-LEVER_LIMIT_INDICES = (1, 2)
+LEVER_LIMIT_INDICES = (1, 1)
 
 # Divisor by which the speed of the intake motors is divided relative to input.
 # Set this to a higher value if not using a low-torque motor!
@@ -46,27 +46,39 @@ def getIntakeSpeed(joystick):
         input.
     """
 
-    if ejectActive: return -1
-    return ((joystick.getRawAxis(j.INTAKE_AXIS_INDEX) + 1) / INTAKE_SPD_DIVISOR)
+    """if ejectActive: return -1
+    return ((joystick.getRawAxis(j.INTAKE_AXIS_INDEX) + 1) / INTAKE_SPD_DIVISOR)"""
+
+    return (joystick.getRawAxis(j.INTAKE_AXIS_INDEX) + 1 - \
+        joystick.getRawAxis(j.EJECT_AXIS_INDEX) - 1) / INTAKE_SPD_DIVISOR
 
 def startEject():
+    """
+        Document later
+    """
+
+    global ejectActive, ejectTimer, ejectFinishing
+
     if not ejectActive:
         ejectTimer = 0
         ejectActive = True
         ejectFinishing = False
 
-def tickEjectTimer(limit):
+def tickEjectTimer(joystick, limit):
     """
-        Document this later.
+        Document later
     """
 
     global ejectActive, ejectTimer, ejectFinishing, leverTimer
+
+    if joystick.getRawButton(j.EJECT_BTN_INDEX) and not ejectActive:
+        startEject()
 
     if ejectActive:
         ejectTimer += 1
         leverTimer += 1
 
-    if ejectTimer >= LEVER_WAIT_TIME and leverTime >= LEVER_FINISH_TIME:
+    if ejectTimer >= LEVER_WAIT_TIME and leverTimer >= LEVER_FINISH_TIME:
         ejectFinishing = True
 
     if ejectFinishing and limit.get():
@@ -75,23 +87,14 @@ def tickEjectTimer(limit):
         leverTimer = 0
         ejectActive = False
 
-def getEjectLeverSpeed():
+def getEjectLeverSpeed(joystick, limit):
     """
         Returns the speed at which the lever should move to allow ball ejection.
     """
 
-    if ejectActive:
-
-        if not ejectFinishing:
-
-            if ejectTimer >= LEVER_WAIT_TIME and leverTime < LEVER_FINISH_TIME:
-
-                return 0.1
-
-            else:
-
-                return 0.0
-
-        elif ejectFinishing:
-
-            return -0.1
+    if joystick.getRawButton(j.EJECT_BTN_INDEX):
+        return 0.4
+    elif not joystick.getRawButton(j.EJECT_BTN_INDEX) and limit.get():
+        return -0.2
+    elif not joystick.getRawButton(j.EJECT_BTN_INDEX) and not limit.get():
+        return 0.0

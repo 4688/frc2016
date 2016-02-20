@@ -22,6 +22,8 @@ X_AXIS_INDEX = 3
 # Default: 2 (L button pressure)
 INTAKE_AXIS_INDEX = 2
 
+EJECT_AXIS_INDEX = 5
+
 # BUTTONS
 #-------------------------------------------------------------------------------
 
