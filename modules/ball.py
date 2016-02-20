@@ -30,11 +30,14 @@ INTAKE_SPD_DIVISOR = 1
 # Default: 150 (3 seconds)
 LEVER_WAIT_TIME = 150
 
+LEVER_FINISH_TIME = 100
+
 # INTAKE & OUTPUT
 #===============================================================================
 
 ejectActive = False
 ejectTimer = 0
+leverTimer = 0
 ejectFinishing = False
 
 def getIntakeSpeed(joystick):
@@ -47,26 +50,32 @@ def getIntakeSpeed(joystick):
     return ((joystick.getRawAxis(j.INTAKE_AXIS_INDEX) + 1) / INTAKE_SPD_DIVISOR)
 
 def startEject():
-    ejectTimer = 0 if not ejectActive
-    ejectActive = True
-    ejectFinishing = False
+    if not ejectActive:
+        ejectTimer = 0
+        ejectActive = True
+        ejectFinishing = False
 
-def tickEjectTimer():
+def tickEjectTimer(limit):
     """
         Document this later.
     """
 
-    if ejectActive: ejectTimer += 1
+    global ejectActive, ejectTimer, ejectFinishing, leverTimer
 
-    if ejectTimer >= LEVER_WAIT_TIME and topLimit.get():
+    if ejectActive:
+        ejectTimer += 1
+        leverTimer += 1
+
+    if ejectTimer >= LEVER_WAIT_TIME and leverTime >= LEVER_FINISH_TIME:
         ejectFinishing = True
 
-    if ejectFinishing and bottomLimit.get():
+    if ejectFinishing and limit.get():
         ejectFinishing = False
         ejectTimer = 0
+        leverTimer = 0
         ejectActive = False
 
-def getEjectLeverSpeed(upLimit, downLimit):
+def getEjectLeverSpeed():
     """
         Returns the speed at which the lever should move to allow ball ejection.
     """
@@ -75,7 +84,7 @@ def getEjectLeverSpeed(upLimit, downLimit):
 
         if not ejectFinishing:
 
-            if ejectTimer >= LEVER_WAIT_TIME and not topLimit.get():
+            if ejectTimer >= LEVER_WAIT_TIME and leverTime < LEVER_FINISH_TIME:
 
                 return 0.1
 
