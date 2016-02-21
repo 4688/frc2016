@@ -54,6 +54,13 @@ class SweetAssRobot(wpi.IterativeRobot):
         self.compressor = wpi.Compressor(0)
         self.compressor.setClosedLoopControl(True)
 
+        # Autonomous routine control switches
+        self.as1 = wpi.DigitalInput(8)
+        self.as2 = wpi.DigitalInput(9)
+
+        # Autonomous routine number
+        self.routineNum = int(self.as1.get() << 1) + int(self.as2.get() << 0)
+
     def teleopPeriodic(self):
         """
             Called 50 times per second while the robot is in teleop (manual)
