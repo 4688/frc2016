@@ -26,8 +26,8 @@ DRIVE_DEADBAND = 0.04
 #-------------------------------------------------------------------------------
 
 # Divisor by which forward/backward & stationary pivot speed is divided.
-# Default: 2.5
-DRIVE_SPD_DIVISOR = 2.5
+# Default: 2
+DRIVE_SPD_DIVISOR = 2
 
 # Allow the driver to enable turbo mode?
 # Make sure this is True on competition builds!

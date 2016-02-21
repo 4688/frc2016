@@ -68,12 +68,16 @@ class SweetAssRobot(wpi.IterativeRobot):
         # Autonomous routine number
         self.routineNum = int(self.as1.get() << 1) + int(self.as2.get() << 0)
 
+        # Store routines
+        for i in range(4):
+            r.parseRoutineFile(i)
+
     def autonomousInit(self):
         """
             Called once every time autonomous mode begins.
         """
 
-        pass
+        r.startPlayback(self.routineNum)
 
     def teleopPeriodic(self):
         """
@@ -83,31 +87,35 @@ class SweetAssRobot(wpi.IterativeRobot):
             component commands, in that order.
         """
 
+        print(r.playing, r.recording, r.formatInputStateStr(self.joystick))
+
         if r.playing >= 0:
             r.tickPlayback()
         elif r.recording >= 0:
             r.logState(self.joystick)
 
-        joystickToUse = self.joystick if not r.playing else r.emulatedJoystick
+        joystickToUse = self.joystick if not (r.playing and r.emulatedJoystick \
+            is not None) else r.emulatedJoystick
 
-        lDriveSpd = d.getDriveLeft(joystick=self.joystick)
+        r.verifyInput(joystick=joystickToUse)
+
+        lDriveSpd = d.getDriveLeft(joystick=joystickToUse)
         self.lMotor0.set(lDriveSpd)
         self.lMotor1.set(lDriveSpd)
 
-        rDriveSpd = d.getDriveRight(joystick=self.joystick)
+        rDriveSpd = d.getDriveRight(joystick=joystickToUse)
         self.rMotor0.set(rDriveSpd)
         self.rMotor1.set(rDriveSpd)
 
-        intakeMotorSpd = b.getIntakeSpeed(joystick=self.joystick)
+        intakeMotorSpd = b.getIntakeSpeed(joystick=joystickToUse)
         self.intakeMotor.set(intakeMotorSpd)
 
-        leverSpd = b.getEjectLeverSpeed(joystick=self.joystick, limit=self.leverLimit)
+        leverSpd = b.getEjectLeverSpeed(joystick=joystickToUse,
+            limit=self.leverLimit)
         self.ejectLever.set(leverSpd)
 
-        armSpd = a.getArmSpeed(joystick=self.joystick, limit=self.armSwitch)
+        armSpd = a.getArmSpeed(joystick=joystickToUse, limit=self.armSwitch)
         self.armMotor.set(armSpd)
-
-        print(self.armSwitch.get())
 
     def testPeriodic(self):
         """

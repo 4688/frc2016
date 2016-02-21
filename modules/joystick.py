@@ -51,7 +51,7 @@ RECORD_BTN_INDEX = 2
 
 # Joystick button indices for manual routine playback.
 # Press one of these buttons to manually run the corresponding recorded routine.
-# Order is Up, Right, Down, Left.
+# Order is Up, Left, Down, Right.
 # Default: 9, 10, 11, 12
 ROUTINE_BTN_INDICES = (9, 12, 10, 11)
 
