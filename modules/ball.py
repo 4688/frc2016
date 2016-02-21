@@ -98,3 +98,5 @@ def getEjectLeverSpeed(joystick, limit):
         return -0.2
     elif not joystick.getRawButton(j.EJECT_BTN_INDEX) and not limit.get():
         return 0.0
+    else:
+        return 0.0

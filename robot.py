@@ -54,12 +54,26 @@ class SweetAssRobot(wpi.IterativeRobot):
         self.compressor = wpi.Compressor(0)
         self.compressor.setClosedLoopControl(True)
 
+        # Boom actuator motor
+        self.armMotor = wpi.CANTalon(a.ARM_MOTOR_INDEX)
+        self.armMotor.set(0.0)
+
+        # Boom limit switch
+        self.armSwitch = wpi.DigitalInput(a.ARM_LIMIT_INDEX)
+
         # Autonomous routine control switches
         self.as1 = wpi.DigitalInput(8)
         self.as2 = wpi.DigitalInput(9)
 
         # Autonomous routine number
         self.routineNum = int(self.as1.get() << 1) + int(self.as2.get() << 0)
+
+    def autonomousInit(self):
+        """
+            Called once every time autonomous mode begins.
+        """
+
+        pass
 
     def teleopPeriodic(self):
         """
@@ -87,12 +101,13 @@ class SweetAssRobot(wpi.IterativeRobot):
         intakeMotorSpd = b.getIntakeSpeed(joystick=self.joystick)
         self.intakeMotor.set(intakeMotorSpd)
 
-        """b.tickEjectTimer(joystick=self.joystick, limit=self.leverLimit)
-        leverSpd = b.getEjectLeverSpeed()
-        self.ejectLever.set(leverSpd)"""
-
         leverSpd = b.getEjectLeverSpeed(joystick=self.joystick, limit=self.leverLimit)
         self.ejectLever.set(leverSpd)
+
+        armSpd = a.getArmSpeed(joystick=self.joystick, limit=self.armSwitch)
+        self.armMotor.set(armSpd)
+
+        print(self.armSwitch.get())
 
     def testPeriodic(self):
         """
