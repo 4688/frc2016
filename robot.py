@@ -50,34 +50,55 @@ class SweetAssRobot(wpi.IterativeRobot):
         # Lever limit switches
         self.leverLimit = wpi.DigitalInput(b.LEVER_LIMIT_INDICES[1])
 
-        # Compressor & stuff
-        self.compressor = wpi.Compressor(0)
-        self.compressor.setClosedLoopControl(True)
-
         # Boom actuator motor
         self.armMotor = wpi.CANTalon(a.ARM_MOTOR_INDEX)
         self.armMotor.set(0.0)
 
         # Boom limit switch
-        self.armSwitch = wpi.DigitalInput(a.ARM_LIMIT_INDEX)
+        self.armUpperLimit = wpi.DigitalInput(a.ARM_LIMIT_INDEX)
+        self.armLowerLimit = wpi.DigitalInput(2) # TODO move index to constant
 
         # Autonomous routine control switches
         self.as1 = wpi.DigitalInput(8)
         self.as2 = wpi.DigitalInput(9)
-
-        # Autonomous routine number
-        self.routineNum = int(self.as1.get() << 1) + int(self.as2.get() << 0)
-
-        # Store routines
-        for i in range(4):
-            r.parseRoutineFile(i)
 
     def autonomousInit(self):
         """
             Called once every time autonomous mode begins.
         """
 
-        r.startPlayback(self.routineNum)
+        # good
+        r.playRoutine(int(self.as1.get() << 1) + int(self.as2.get() << 0))
+
+    def autonomousPeriodic(self):
+        # also good
+
+        if r.isPlaying():
+
+            # good
+
+            joystickToUse = r.tickPlayback()
+            if joystickToUse is None:
+                joystickToUse = self.joystick
+            joystickToUse = j.FakeJoystick("0.0:0.4:0.0:0.0:0.0:0.0/000000000000")
+
+            lDriveSpd = d.getDriveLeft(joystick=joystickToUse)
+            self.lMotor0.set(lDriveSpd)
+            self.lMotor1.set(lDriveSpd)
+
+            rDriveSpd = d.getDriveRight(joystick=joystickToUse)
+            self.rMotor0.set(rDriveSpd / 1.1)
+            self.rMotor1.set(rDriveSpd / 1.1)
+
+            intakeMotorSpd = b.getIntakeSpeed(joystick=joystickToUse)
+            self.intakeMotor.set(intakeMotorSpd)
+
+            leverSpd = b.getEjectLeverSpeed(joystick=joystickToUse,
+                limit=self.leverLimit)
+            self.ejectLever.set(leverSpd)
+
+            armSpd = a.getArmSpeed(joystick=joystickToUse, limit=self.armUpperLimit)
+            self.armMotor.set(armSpd)
 
     def teleopPeriodic(self):
         """
@@ -87,25 +108,15 @@ class SweetAssRobot(wpi.IterativeRobot):
             component commands, in that order.
         """
 
-        print(r.playing, r.recording, r.formatInputStateStr(self.joystick))
-
-        if r.playing >= 0:
-            r.tickPlayback()
-        elif r.recording >= 0:
-            r.logState(self.joystick)
-
-        joystickToUse = self.joystick if not (r.playing and r.emulatedJoystick \
-            is not None) else r.emulatedJoystick
-
-        r.verifyInput(joystick=joystickToUse)
+        joystickToUse = self.joystick
 
         lDriveSpd = d.getDriveLeft(joystick=joystickToUse)
         self.lMotor0.set(lDriveSpd)
         self.lMotor1.set(lDriveSpd)
 
         rDriveSpd = d.getDriveRight(joystick=joystickToUse)
-        self.rMotor0.set(rDriveSpd)
-        self.rMotor1.set(rDriveSpd)
+        self.rMotor0.set(rDriveSpd / 1.13) # CAPITALISM
+        self.rMotor1.set(rDriveSpd / 1.13)
 
         intakeMotorSpd = b.getIntakeSpeed(joystick=joystickToUse)
         self.intakeMotor.set(intakeMotorSpd)
@@ -114,8 +125,10 @@ class SweetAssRobot(wpi.IterativeRobot):
             limit=self.leverLimit)
         self.ejectLever.set(leverSpd)
 
-        armSpd = a.getArmSpeed(joystick=joystickToUse, limit=self.armSwitch)
+        armSpd = a.getArmSpeed(joystick=joystickToUse, limit=self.armUpperLimit)
         self.armMotor.set(armSpd)
+
+        # print(self.armLowerLimit.get(), self.armUpperLimit.get())
 
     def testPeriodic(self):
         """

@@ -59,7 +59,7 @@ def getDriveLeft(joystick):
     forward = -yAxis / DRIVE_SPD_DIVISOR * turbo
     speed = forward
 
-    if forward <= DRIVE_DEADBAND and abs(xAxis) > DRIVE_DEADBAND:
+    if abs(forward) <= DRIVE_DEADBAND and abs(xAxis) > DRIVE_DEADBAND:
         # Pivot whilst stationary
 
         speed = xAxis / DRIVE_SPD_DIVISOR

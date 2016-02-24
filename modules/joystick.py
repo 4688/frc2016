@@ -20,9 +20,9 @@ X_AXIS_INDEX = 3
 
 # Joystick axis index for ball intake motors.
 # Default: 2 (L button pressure)
-INTAKE_AXIS_INDEX = 2
+INTAKE_AXIS_INDEX = 5
 
-EJECT_AXIS_INDEX = 5
+EJECT_AXIS_INDEX = 2
 
 # BUTTONS
 #-------------------------------------------------------------------------------
@@ -74,20 +74,21 @@ class FakeJoystick:
         # Split axes and buttons into manageable arrays
         self.axes = [float(num) for num in axesState.split(":")]
         self.buttons = [bool(int(btn)) for btn in list(btnsState)]
+        # print(self.axes, self.buttons)
 
     def getRawButton(self, btnIndex):
         """
             Get the state of a button by index. NOT zero-indexed.
         """
 
-        return self.buttons[btnIndex + 1]
+        return self.buttons[btnIndex]
 
     def getRawAxis(self, axisIndex):
         """
             Get the value of an axis by index.
         """
 
-        return self.axes[btnIndex]
+        return self.axes[axisIndex - 1]
 
     def getButtonCount(self):
         return len(self.buttons)

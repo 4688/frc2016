@@ -43,7 +43,7 @@ def getArmSpeed(joystick: wpi.Joystick, limit: wpi.DigitalInput):
     limitMult = -1 # if limit.get() else 1
 
     oldArmSpd = prevArmSpd
-    speed = 0.6 * speedMult * limitMult # TODO change this to a real value
+    speed = 0.75 * speedMult * limitMult # TODO change this to a real value
     prevArmSpd = speed if speed != prevArmSpd else prevArmSpd
 
     return speed
