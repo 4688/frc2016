@@ -44,38 +44,44 @@ TURBO_FACTOR = 2
 
 def getDriveLeft(joystick):
     """
-        Calculates and returns the speed of the left drive motors, relative to
+        Calculates and returns the speed of the right drive motors, relative to
         input.
     """
 
-    # Joystick axes
     yAxis = joystick.getRawAxis(j.Y_AXIS_INDEX)
     xAxis = joystick.getRawAxis(j.X_AXIS_INDEX)
 
-    # Turbo factor
-    turbo = TURBO_FACTOR if joystick.getRawButton(j.TURBO_BTN_INDEX) else 1
+    forward = -yAxis / DRIVE_SPD_DIVISOR * (TURBO_FACTOR if ALLOW_TURBO and \
+        joystick.getRawButton(j.TURBO_BTN_INDEX) else 1)
+    leftSpeed = forward
+    rightSpeed = -forward
 
-    # Speed calculation
-    forward = -yAxis / DRIVE_SPD_DIVISOR * turbo
-    speed = forward
-
-    if abs(forward) <= DRIVE_DEADBAND and abs(xAxis) > DRIVE_DEADBAND:
+    if forward <= DRIVE_DEADBAND and abs(xAxis) > DRIVE_DEADBAND:
         # Pivot whilst stationary
 
-        speed = xAxis / DRIVE_SPD_DIVISOR
+        turnSpeed = xAxis / DRIVE_SPD_DIVISOR
+        leftSpeed = turnSpeed
+        rightSpeed = turnSpeed
 
     elif forward > DRIVE_DEADBAND or forward < -DRIVE_DEADBAND:
-        # Turn whilst driving
-        turnFactor = abs(xAxis) + 1
+        # Turning whilst driving
+
+        turnFactor = (abs(xAxis) + 1)
 
         if xAxis > DRIVE_DEADBAND:
-            # X-axis is positive (turn to the right)
-            speed *= turnFactor
-        elif xAxis < -DRIVE_DEADBAND:
-            # X-axis is negative (turn to the left)
-            speed /= turnFactor
+            # X axis is positive (to the right)
 
-    return speed
+            leftSpeed *= turnFactor
+            rightSpeed /= turnFactor
+
+        elif xAxis < -DRIVE_DEADBAND:
+            # X axis if negative (to the left)
+
+            leftSpeed /= turnFactor
+            rightSpeed *= turnFactor
+
+    return leftSpeed
+
 
 def getDriveRight(joystick):
     """
@@ -83,31 +89,36 @@ def getDriveRight(joystick):
         input.
     """
 
-    # Joystick axes
     yAxis = joystick.getRawAxis(j.Y_AXIS_INDEX)
     xAxis = joystick.getRawAxis(j.X_AXIS_INDEX)
 
-    # Turbo factor
-    turbo = TURBO_FACTOR if joystick.getRawButton(j.TURBO_BTN_INDEX) else 1
-
-    # Speed calculation
-    forward = -yAxis / DRIVE_SPD_DIVISOR * turbo
-    speed = -forward
+    forward = -yAxis / DRIVE_SPD_DIVISOR * (TURBO_FACTOR if ALLOW_TURBO and \
+        joystick.getRawButton(j.TURBO_BTN_INDEX) else 1)
+    leftSpeed = forward
+    rightSpeed = -forward
 
     if forward <= DRIVE_DEADBAND and abs(xAxis) > DRIVE_DEADBAND:
         # Pivot whilst stationary
 
-        speed = xAxis / DRIVE_SPD_DIVISOR
+        turnSpeed = xAxis / DRIVE_SPD_DIVISOR
+        leftSpeed = turnSpeed
+        rightSpeed = turnSpeed
 
     elif forward > DRIVE_DEADBAND or forward < -DRIVE_DEADBAND:
-        # Turn whilst driving
-        turnFactor = abs(xAxis) + 1
+        # Turning whilst driving
+
+        turnFactor = (abs(xAxis) + 1)
 
         if xAxis > DRIVE_DEADBAND:
-            # X-axis is positive (turn to the right)
-            speed /= turnFactor
-        elif xAxis < -DRIVE_DEADBAND:
-            # X-axis is negative (turn to the left)
-            speed *= turnFactor
+            # X axis is positive (to the right)
 
-    return speed
+            leftSpeed *= turnFactor
+            rightSpeed /= turnFactor
+
+        elif xAxis < -DRIVE_DEADBAND:
+            # X axis if negative (to the left)
+
+            leftSpeed /= turnFactor
+            rightSpeed *= turnFactor
+
+    return rightSpeed

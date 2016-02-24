@@ -9,7 +9,8 @@ import wpilib as wpi
 
 ARM_MOTOR_INDEX = 5
 
-ARM_LIMIT_INDEX = 0
+ARM_UPPER_LIMIT_INDEX = 0
+ARM_LOWER_LIMIT_INDEX = 2
 
 # CALCULATIONS
 #===============================================================================
@@ -17,15 +18,17 @@ ARM_LIMIT_INDEX = 0
 armState = ""
 prevArmSpd = 0.0
 
-def getArmSpeed(joystick: wpi.Joystick, limit: wpi.DigitalInput):
+def getArmSpeed(joystick, upLimit, downLimit):
     """
         Calculates and returns the speed of the arm.
     """
 
     global armState, prevArmSpd
 
-    xBtn = joystick.getRawButton(j.RETRACT_BTN_INDEX)
+    """xBtn = joystick.getRawButton(j.RETRACT_BTN_INDEX)
     yBtn = joystick.getRawButton(j.EXTEND_BTN_INDEX)
+
+    xBtn = not joystick.getRawButton()
 
     if not xBtn and not yBtn:
         return 0.0
@@ -47,3 +50,11 @@ def getArmSpeed(joystick: wpi.Joystick, limit: wpi.DigitalInput):
     prevArmSpd = speed if speed != prevArmSpd else prevArmSpd
 
     return speed
+    """
+
+    xBtn = joystick.getRawButton(j.EXTEND_BTN_INDEX) and not downLimit.get()
+    yBtn = joystick.getRawButton(j.RETRACT_BTN_INDEX) and upLimit.get()
+
+    netMult = (1 if xBtn else 0) + (-1 if yBtn else 0)
+
+    return 0.75 * netMult

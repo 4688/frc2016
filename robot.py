@@ -55,8 +55,8 @@ class SweetAssRobot(wpi.IterativeRobot):
         self.armMotor.set(0.0)
 
         # Boom limit switch
-        self.armUpperLimit = wpi.DigitalInput(a.ARM_LIMIT_INDEX)
-        self.armLowerLimit = wpi.DigitalInput(2) # TODO move index to constant
+        self.armUpperLimit = wpi.DigitalInput(a.ARM_UPPER_LIMIT_INDEX)
+        self.armLowerLimit = wpi.DigitalInput(a.ARM_LOWER_LIMIT_INDEX)
 
         # Autonomous routine control switches
         self.as1 = wpi.DigitalInput(8)
@@ -97,7 +97,8 @@ class SweetAssRobot(wpi.IterativeRobot):
                 limit=self.leverLimit)
             self.ejectLever.set(leverSpd)
 
-            armSpd = a.getArmSpeed(joystick=joystickToUse, limit=self.armUpperLimit)
+            armSpd = a.getArmSpeed(joystick=joystickToUse, upLimit=self.armUpperLimit, \
+                downLimit=self.armLowerLimit)
             self.armMotor.set(armSpd)
 
     def teleopPeriodic(self):
@@ -125,7 +126,8 @@ class SweetAssRobot(wpi.IterativeRobot):
             limit=self.leverLimit)
         self.ejectLever.set(leverSpd)
 
-        armSpd = a.getArmSpeed(joystick=joystickToUse, limit=self.armUpperLimit)
+        armSpd = a.getArmSpeed(joystick=joystickToUse, upLimit=self.armUpperLimit, \
+            downLimit=self.armLowerLimit)
         self.armMotor.set(armSpd)
 
         # print(self.armLowerLimit.get(), self.armUpperLimit.get())
