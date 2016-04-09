@@ -1,5 +1,5 @@
 .deploy_cfg
-robot_constants.py
-__pycache__/
-NOTE TO OTHER MEMBERS.txt
-old/
+.idea/
+robot_modules/__pycache__/
+tests/.cache/
+tests/__pycache__/

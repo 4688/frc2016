@@ -1,143 +1,167 @@
 #!/usr/bin/python3
 
-import modules.arm as a
-import modules.ball as b
-import modules.drive as d
-import modules.joystick as j
-import modules.replay as r
-import modules.station as s
+import os
 
 import wpilib as wpi
 
-class SweetAssRobot(wpi.IterativeRobot):
+from robot_modules.arm import ArmManager
+from robot_modules.ball import BallManager
+from robot_modules.drive import DriveManager
+from robot_modules.joystick import JoystickManager
 
-    def robotInit(self):
+class LoRida(wpi.IterativeRobot):
+    """
+    TODO: COOL CATCHPHRASE HERE
+    """
+
+    def robotInit(self) -> None:
         """
-            Called once when the robot starts up.
-            This is where we initialize all of the robot's components.
+        Called once each time the robot starts up.
+        This is where all of the robot's components are initialized.
         """
 
         # Joystick
-        self.joystick = wpi.Joystick(j.JOYSTICK_INDEX)
+        self.joystick = wpi.Joystick(JoystickManager.JOYSTICK_INDEX)
 
         # Left front drive motor
-        self.lMotor0 = wpi.CANTalon(d.L_CAN_INDICES[0])
+        self.lMotor0 = wpi.CANTalon(DriveManager.L_CAN_INDICES[0])
         self.lMotor0.changeControlMode(wpi.CANTalon.ControlMode.PercentVbus)
         self.lMotor0.set(0.0)
 
-        # Left back drive motor
-        self.lMotor1 = wpi.CANTalon(d.L_CAN_INDICES[1])
+        # Left rear drive motor
+        self.lMotor1 = wpi.CANTalon(DriveManager.L_CAN_INDICES[1])
         self.lMotor1.changeControlMode(wpi.CANTalon.ControlMode.PercentVbus)
         self.lMotor1.set(0.0)
 
         # Right front drive motor
-        self.rMotor0 = wpi.CANTalon(d.R_CAN_INDICES[0])
+        self.rMotor0 = wpi.CANTalon(DriveManager.R_CAN_INDICES[0])
         self.rMotor0.changeControlMode(wpi.CANTalon.ControlMode.PercentVbus)
         self.rMotor0.set(0.0)
 
-        # Right back drive motor
-        self.rMotor1 = wpi.CANTalon(d.R_CAN_INDICES[1])
+        # Right rear drive motor
+        self.rMotor1 = wpi.CANTalon(DriveManager.R_CAN_INDICES[1])
         self.rMotor1.changeControlMode(wpi.CANTalon.ControlMode.PercentVbus)
         self.rMotor1.set(0.0)
 
-        # Intake motors
-        self.intakeMotor = wpi.VictorSP(b.INTAKE_INDEX)
-        self.intakeMotor.set(0.0)
+        # Ball intake/ejection motors
+        self.ballMotor = wpi.VictorSP(BallManager.BALL_MOTOR_INDEX)
+        self.ballMotor.set(0.0)
 
-        self.ejectLever = wpi.VictorSP(2)
+        # Eject actuator motor
+        self.ejectLever = wpi.VictorSP(BallManager.RELEASE_LEVER_INDEX)
         self.ejectLever.set(0.0)
 
-        # Lever limit switches
-        self.leverLimit = wpi.DigitalInput(b.LEVER_LIMIT_INDICES[1])
+        # Eject actuator limit switch
+        self.leverLimit = wpi.DigitalInput(BallManager.LEVER_LIMIT_INDEX)
 
         # Boom actuator motor
-        self.armMotor = wpi.CANTalon(a.ARM_MOTOR_INDEX)
+        self.armMotor = wpi.CANTalon(ArmManager.BOOM_MOTOR_INDEX)
         self.armMotor.set(0.0)
 
-        # Boom limit switch
-        self.armUpperLimit = wpi.DigitalInput(a.ARM_UPPER_LIMIT_INDEX)
-        self.armLowerLimit = wpi.DigitalInput(a.ARM_LOWER_LIMIT_INDEX)
+        # Boom actuator limit switches
+        self.armLowerLimit = wpi.DigitalInput(ArmManager.BOOM_LOWER_LIMIT_INDEX)
+        self.armUpperLimit = wpi.DigitalInput(ArmManager.BOOM_UPPER_LIMIT_INDEX)
 
         # Autonomous routine control switches
         self.as1 = wpi.DigitalInput(8)
         self.as2 = wpi.DigitalInput(9)
 
-    def autonomousInit(self):
+    def autonomousInit(self) -> None:
         """
-            Called once every time autonomous mode begins.
+        Called once each time autonomous mode begins.
         """
 
-        # good
-        r.playRoutine(int(self.as1.get() << 1) + int(self.as2.get() << 0))
+        self.routineNum = int(self.as1.get() << 1) + int(self.as2.get())
+        self.autoTimer = 0
 
-    def autonomousPeriodic(self):
-        # also good
-
-        if r.isPlaying():
-
-            # good
-
-            joystickToUse = r.tickPlayback()
-            if joystickToUse is None:
-                joystickToUse = self.joystick
-            joystickToUse = j.FakeJoystick("0.0:0.4:0.0:0.0:0.0:0.0/000000000000")
-
-            lDriveSpd = d.getDriveLeft(joystick=joystickToUse)
-            self.lMotor0.set(lDriveSpd)
-            self.lMotor1.set(lDriveSpd)
-
-            rDriveSpd = d.getDriveRight(joystick=joystickToUse)
-            self.rMotor0.set(rDriveSpd / 1.1)
-            self.rMotor1.set(rDriveSpd / 1.1)
-
-            intakeMotorSpd = b.getIntakeSpeed(joystick=joystickToUse)
-            self.intakeMotor.set(intakeMotorSpd)
-
-            leverSpd = b.getEjectLeverSpeed(joystick=joystickToUse,
-                limit=self.leverLimit)
-            self.ejectLever.set(leverSpd)
-
-            armSpd = a.getArmSpeed(joystick=joystickToUse, upLimit=self.armUpperLimit, \
-                downLimit=self.armLowerLimit)
-            self.armMotor.set(armSpd)
-
-    def teleopPeriodic(self):
+    def autonomousPeriodic(self) -> None:
         """
-            Called 50 times per second while the robot is in teleop (manual)
-            mode. This is essentially one "frame" of the robot code; i.e. this
-            is where we interpret user input, process built-in logic, and send
-            component commands, in that order.
+        Called 50 times per second while auto mode is active.
+        """
+
+        if self.routineNum == 3: # Low bar
+            if self.autoTimer < 200 and not self.armLowerLimit.get():
+                self.armMotor.set(0.8)
+            elif self.autoTimer < 200 and self.armLowerLimit.get():
+                self.armMotor.set(0.0)
+            elif 400 > self.autoTimer > 250:
+                self.lMotor0.set(0.4)
+                self.lMotor1.set(0.4)
+                self.rMotor0.set(-0.4)
+                self.rMotor1.set(-0.4)
+            elif self.autoTimer > 400:
+                self.lMotor0.set(0.0)
+                self.lMotor1.set(0.0)
+                self.rMotor0.set(0.0)
+                self.rMotor1.set(0.0)
+            print(self.autoTimer)
+            self.autoTimer += 1
+
+        if self.routineNum == 1 or self.routineNum == 2: # Port cullis
+            if self.autoTimer < 200 and not self.armLowerLimit.get():
+                self.armMotor.set(0.8)
+            elif self.autoTimer < 200 and self.armLowerLimit.get():
+                self.armMotor.set(0.0)
+            elif 400 > self.autoTimer > 250:
+                self.lMotor0.set(-0.4)
+                self.lMotor1.set(-0.4)
+                self.rMotor0.set(0.4)
+                self.rMotor1.set(0.4)
+            elif self.autoTimer > 400:
+                self.lMotor0.set(0.0)
+                self.lMotor1.set(0.0)
+                self.rMotor0.set(0.0)
+                self.rMotor1.set(0.0)
+            print(self.autoTimer)
+            self.autoTimer += 1
+
+    def teleopInit(self) -> None:
+        """
+        Called once each time manual (teleop) mode begins.
+        """
+
+        pass
+
+    def teleopPeriodic(self) -> None:
+        """
+        Called 50 times per second while manual mode is active.
         """
 
         joystickToUse = self.joystick
+        self._tickDrive(joystickToUse=self.joystick)
 
-        lDriveSpd = d.getDriveLeft(joystick=joystickToUse)
-        self.lMotor0.set(lDriveSpd)
-        self.lMotor1.set(lDriveSpd)
-
-        rDriveSpd = d.getDriveRight(joystick=joystickToUse)
-        self.rMotor0.set(rDriveSpd / 1.13) # CAPITALISM
-        self.rMotor1.set(rDriveSpd / 1.13)
-
-        intakeMotorSpd = b.getIntakeSpeed(joystick=joystickToUse)
-        self.intakeMotor.set(intakeMotorSpd)
-
-        leverSpd = b.getEjectLeverSpeed(joystick=joystickToUse,
-            limit=self.leverLimit)
-        self.ejectLever.set(leverSpd)
-
-        armSpd = a.getArmSpeed(joystick=joystickToUse, upLimit=self.armUpperLimit, \
-            downLimit=self.armLowerLimit)
-        self.armMotor.set(armSpd)
-
-        # print(self.armLowerLimit.get(), self.armUpperLimit.get())
-
-    def testPeriodic(self):
+    def testPeriodic(self) -> None:
         """
-            Called 50 times per second while the robot is in test mode.
+        Called 50 times per second while test mode is active.
         """
 
         wpi.LiveWindow.run()
 
+    def _tickDrive(self, joystickToUse):
+        """
+        Sets motor speeds and the like.
+        Callable from both teleop and autonomous modes.
+        """
+
+        lDriveSpd = DriveManager.getDriveLeft(joystick=joystickToUse)
+        self.lMotor0.set(lDriveSpd)
+        self.lMotor1.set(lDriveSpd)
+
+        rDriveSpd = DriveManager.getDriveRight(joystick=joystickToUse)
+        self.rMotor0.set(rDriveSpd)
+        self.rMotor1.set(rDriveSpd)
+
+        ballMotorSpd = BallManager.getIntakeSpeed(joystick=joystickToUse)
+        self.ballMotor.set(ballMotorSpd)
+
+        leverSpd = BallManager.getEjectLeverSpeed(joystick=joystickToUse,
+                                                  limit=self.leverLimit)
+        self.ejectLever.set(leverSpd)
+
+        armSpd = ArmManager.getArmSpeed(joystick=joystickToUse,
+                                        upLimit=self.armUpperLimit,
+                                        downLimit=self.armLowerLimit)
+        self.armMotor.set(armSpd)
+
 if __name__ == "__main__":
-    wpi.run(SweetAssRobot)
+    wpi.run(LoRida)
